@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-            
+# @Author: Galois
+# @Email: Galois.Alex@gmail.com
+# @Time: 20230911
+
 import asyncio
 import aiohttp
 import ujson
