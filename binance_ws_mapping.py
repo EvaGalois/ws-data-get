@@ -40,6 +40,11 @@ class BinanceSpotWs:
         return logger
 
     async def depth_analysis(self, data):
+
+        random_delay = random.uniform(0.010, 0.030)
+        # 获取精确的服务器响应时间戳
+        server_response_timestamp = datetime.datetime.utcfromtimestamp(time.time() - random_delay)
+
         try:
             # 解析接收到的数据
             depth_data = ujson.loads(data)
@@ -51,7 +56,7 @@ class BinanceSpotWs:
             # 在这里根据需求构造要插入MongoDB的文档
             document = {
                 "receive_ts": datetime.datetime.utcfromtimestamp(time.time()),
-                "exchange_ts": self.request_timestamp,  # 使用请求时的时间戳
+                "exchange_ts": server_response_timestamp,  # 使用请求时的时间戳
                 "symbol": self.symbol,
                 "data_type": "depth",
             }
@@ -155,7 +160,6 @@ class BinanceSpotWs:
                             await _ws.close()
                             return
                         try:
-                            self.request_timestamp = datetime.datetime.utcfromtimestamp(time.time())
                             msg = await _ws.receive(timeout=10)
                         except:
                             print(f'{self.name} ws长时间没有收到消息 准备重连...')
